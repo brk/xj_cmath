@@ -166,6 +166,37 @@ fn floating_point_edge_cases() {
     );
 }
 
+#[cfg(target_os = "macos")]
+#[test]
+fn macos_compatibility_edge_cases() {
+    assert_eq!(significand(f64::from_bits(1)), 1.0);
+    assert_eq!(significandf(f32::from_bits(1)), 1.0);
+    assert_eq!(significand(-12.0), -1.5);
+    assert_eq!(significandf(-12.0), -1.5);
+    assert_eq!(significand(-0.0).to_bits(), (-0.0f64).to_bits());
+    assert_eq!(significandf(-0.0).to_bits(), (-0.0f32).to_bits());
+    assert_eq!(significand(f64::INFINITY), f64::INFINITY);
+    assert!(significandf(f32::NAN).is_nan());
+
+    assert_eq!(scalbf(1.0, -149.0).to_bits(), 1);
+    assert_eq!(scalbf(-1.0, -f32::MAX).to_bits(), (-0.0f32).to_bits());
+    assert_eq!(scalbf(1.0, f32::MAX), f32::INFINITY);
+    assert_eq!(scalbf(1.0, f32::INFINITY), f32::INFINITY);
+    assert_eq!(scalbf(1.0, f32::NEG_INFINITY), 0.0);
+    assert!(scalbf(1.0, 0.5).is_nan());
+    assert!(scalbf(1.0, f32::NAN).is_nan());
+    assert_eq!(scalbf(-0.0, f32::MAX).to_bits(), (-0.0f32).to_bits());
+
+    let (mut sine, mut cosine) = (1.0, 0.0);
+    sincos(-0.0, &mut sine, &mut cosine);
+    assert_eq!(sine.to_bits(), (-0.0f64).to_bits());
+    assert_eq!(cosine, 1.0);
+    let (mut sine, mut cosine) = (0.0, 0.0);
+    sincosf(f32::INFINITY, &mut sine, &mut cosine);
+    assert!(sine.is_nan());
+    assert!(cosine.is_nan());
+}
+
 #[test]
 fn output_references_and_raw_pointers() {
     {

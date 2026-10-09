@@ -16,9 +16,10 @@
 //! Original functions and the global are available in [`raw`] for synchronized
 //! unsafe access; [`signgam`] also re-exports the C global at the crate root.
 //!
-//! Requires a C11 compiler and a libm exporting the requested POSIX, GNU/BSD,
-//! and obsolete symbols. Linux with glibc is the tested platform; availability
-//! of extensions elsewhere depends on the system libm.
+//! Requires a C11 compiler and the platform libm. macOS uses compatibility
+//! shims for missing GNU/BSD and obsolete symbols; single-precision Bessel
+//! functions evaluate the native double-precision function and convert to `f32`.
+//! Other platforms require libm to export the requested extensions.
 //!
 //! ```
 //! let mut exponent = 0;

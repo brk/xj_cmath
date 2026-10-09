@@ -8,7 +8,6 @@
 
 use core::ffi::{c_char, c_int, c_long, c_longlong};
 
-#[link(name = "m")]
 unsafe extern "C" {
     pub fn acos(x: f64) -> f64;
     pub fn acosf(x: f32) -> f32;
@@ -74,7 +73,9 @@ unsafe extern "C" {
     pub fn roundf(x: f32) -> f32;
     pub fn trunc(x: f64) -> f64;
     pub fn truncf(x: f32) -> f32;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_significand")]
     pub fn significand(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_significandf")]
     pub fn significandf(x: f32) -> f32;
     pub fn atan2(y: f64, x: f64) -> f64;
     pub fn atan2f(y: f32, x: f32) -> f32;
@@ -96,19 +97,26 @@ unsafe extern "C" {
     pub fn fmaxf(x: f32, y: f32) -> f32;
     pub fn fmin(x: f64, y: f64) -> f64;
     pub fn fminf(x: f32, y: f32) -> f32;
+    #[cfg_attr(target_os = "macos", link_name = "remainder")]
     pub fn drem(x: f64, y: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "remainderf")]
     pub fn dremf(x: f32, y: f32) -> f32;
     pub fn scalb(x: f64, exp: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_scalbf")]
     pub fn scalbf(x: f32, exp: f32) -> f32;
     pub fn fma(x: f64, y: f64, z: f64) -> f64;
     pub fn fmaf(x: f32, y: f32, z: f32) -> f32;
     pub fn ilogb(x: f64) -> c_int;
     pub fn ilogbf(x: f32) -> c_int;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_finite")]
     pub fn finite(x: f64) -> c_int;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_finitef")]
     pub fn finitef(x: f32) -> c_int;
     pub fn isinf(x: f64) -> c_int;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_isinff")]
     pub fn isinff(x: f32) -> c_int;
     pub fn isnan(x: f64) -> c_int;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_isnanf")]
     pub fn isnanf(x: f32) -> c_int;
     pub fn ldexp(x: f64, exp: c_int) -> f64;
     pub fn ldexpf(x: f32, exp: c_int) -> f32;
@@ -125,29 +133,39 @@ unsafe extern "C" {
     pub fn llround(x: f64) -> c_longlong;
     pub fn llroundf(x: f32) -> c_longlong;
     pub fn j0(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_j0f")]
     pub fn j0f(x: f32) -> f32;
     pub fn j1(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_j1f")]
     pub fn j1f(x: f32) -> f32;
     pub fn y0(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_y0f")]
     pub fn y0f(x: f32) -> f32;
     pub fn y1(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_y1f")]
     pub fn y1f(x: f32) -> f32;
     pub fn jn(n: c_int, x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_jnf")]
     pub fn jnf(n: c_int, x: f32) -> f32;
     pub fn yn(n: c_int, x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_ynf")]
     pub fn ynf(n: c_int, x: f32) -> f32;
     pub fn lgamma(x: f64) -> f64;
     pub fn lgammaf(x: f32) -> f32;
+    #[cfg_attr(target_os = "macos", link_name = "lgamma")]
     pub fn gamma(x: f64) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "lgammaf")]
     pub fn gammaf(x: f32) -> f32;
     pub fn frexp(value: f64, exp: *mut c_int) -> f64;
     pub fn modf(value: f64, iptr: *mut f64) -> f64;
     pub fn remquo(x: f64, y: f64, quo: *mut c_int) -> f64;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_sincos")]
     pub fn sincos(x: f64, sin: *mut f64, cos: *mut f64) -> ();
     pub fn lgamma_r(x: f64, signp: *mut c_int) -> f64;
     pub fn frexpf(value: f32, exp: *mut c_int) -> f32;
     pub fn modff(value: f32, iptr: *mut f32) -> f32;
     pub fn remquof(x: f32, y: f32, quo: *mut c_int) -> f32;
+    #[cfg_attr(target_os = "macos", link_name = "xj_cmath_sincosf")]
     pub fn sincosf(x: f32, sin: *mut f32, cos: *mut f32) -> ();
     pub fn lgammaf_r(x: f32, signp: *mut c_int) -> f32;
     pub fn nan(tagp: *const c_char) -> f64;
