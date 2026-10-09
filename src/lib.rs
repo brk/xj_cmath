@@ -1,15 +1,58 @@
 //! Safe wrappers for C `math.h`, using the platform libm.
 //!
 //! Floating-point arguments use `f32`/`f64`; integer arguments and results use
-//! the corresponding `core::ffi` types. Domain/range errors, NaNs, infinities,
-//! rounding modes, `errno`, and floating-point exceptions retain C semantics.
+//! the corresponding `core::ffi` types.
+//!
+//! The compatibility target is ordinary C math usage with the default
+//! round-to-nearest environment: numerical results, signed zeros, infinities,
+//! NaN classification, and domain/pole/range error reporting.
+//!
+//! # Behavioral compatibility details
+//!
+//! Numerical work uses the platform's math implementation or compiler builtins;
+//! the crate does not impose a common accuracy or error-handling policy across
+//! platforms.
+//!
+//! [`sqrt`] and [`sqrtf`] explicitly set `errno` to the target's `EDOM` for
+//! negative arguments (excluding negative zero). [`fmod`] and [`fmodf`] do so
+//! for an infinite dividend or a zero divisor, unless either argument is NaN.
+//! These guarantees apply when the target advertises `MATH_ERRNO`, including
+//! when the result is discarded. The C shims use the target's `errno` storage
+//! and constants and do not clear incoming `errno` on success. These checks
+//! preserve domain-error reporting even when Rust's compiler builtins supply
+//! the numerical implementation.
+//!
+//! Differential tests of [`exp`], [`log`], and [`pow`] and their `f32` variants
+//! on x86_64 Linux/glibc found matching non-NaN results and `errno` against
+//! builtin-enabled, optimized GCC C code under default rounding. This is
+//! evidence for the tested inputs and toolchains, not a guarantee of exact
+//! native-libm behavior for every call. Outside the explicit checks above,
+//! compiler folding or substitution can affect both results and error reporting
+//! (for example, replacing `pow(x, 2)` with multiplication).
+//!
+//! The crate does not guarantee bitwise agreement with a separately compiled C
+//! call, dynamic rounding-mode preservation, floating-point exception flags or
+//! traps, or NaN signs, payloads, and signaling behavior. These limits also apply
+//! to [`raw`]; calling a raw declaration does not disable compiler builtins.
+//!
+//! For context, conforming C implementations can differ in mathematical
+//! accuracy, intermediate evaluation precision, NaN representations, and their
+//! advertised `math_errhandling` policy; underflow reporting is also partly
+//! implementation-defined. Constant folding and builtin substitutions can
+//! change observable floating-point flags when environment access is disabled.
+//! C's `FENV_ACCESS` and IEC 60559 (Annex F) requirements constrain those changes
+//! when applicable; optimization does not license losing required `errno`
+//! side effects. See [C11 draft N1570], sections 5.2.4.2.2, 7.6.1, 7.12.1,
+//! and Annex F. The compatibility target above is therefore narrower than full
+//! equivalence to C compiled for strict floating-point environment access.
+//!
+//! [C11 draft N1570]: https://open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
+//!
+//! # API conventions
+//!
 //! Classification wrappers use Rust's built-in float methods and return `0` or
 //! `1`. [`fpclassify`] and [`fpclassifyf`] return the native C `FP_*` values,
 //! exposed here as immutable statics.
-//! [`sqrt`], [`sqrtf`], [`fmod`], and [`fmodf`] use C shims that explicitly
-//! report domain errors through `errno` when the target advertises `MATH_ERRNO`.
-//! This preserves error reporting even when Rust's compiler builtins supply
-//! the numerical implementation of those functions.
 //!
 //! Output-pointer functions take mutable references. Their unsafe `_ptr`
 //! alternatives accept native pointers. The NaN constructors take `&mut CStr`
