@@ -1,0 +1,158 @@
+//! Native C bindings. All functions are unsafe to call.
+//!
+//! Output pointers must be aligned, writable, and valid for one value of their
+//! pointee type. String pointers must refer to readable NUL-terminated strings.
+//! Callers of `lgamma`, `lgammaf`, `gamma`, `gammaf`, or users of `signgam`
+//! must synchronize access to the shared C global across all threads and libraries.
+//! Use the crate-root wrappers when possible.
+
+use core::ffi::{c_char, c_int, c_long, c_longlong};
+
+#[link(name = "m")]
+unsafe extern "C" {
+    pub fn acos(x: f64) -> f64;
+    pub fn acosf(x: f32) -> f32;
+    pub fn asin(x: f64) -> f64;
+    pub fn asinf(x: f32) -> f32;
+    pub fn atan(x: f64) -> f64;
+    pub fn atanf(x: f32) -> f32;
+    pub fn cos(x: f64) -> f64;
+    pub fn cosf(x: f32) -> f32;
+    pub fn sin(x: f64) -> f64;
+    pub fn sinf(x: f32) -> f32;
+    pub fn tan(x: f64) -> f64;
+    pub fn tanf(x: f32) -> f32;
+    pub fn acosh(x: f64) -> f64;
+    pub fn acoshf(x: f32) -> f32;
+    pub fn asinh(x: f64) -> f64;
+    pub fn asinhf(x: f32) -> f32;
+    pub fn atanh(x: f64) -> f64;
+    pub fn atanhf(x: f32) -> f32;
+    pub fn cosh(x: f64) -> f64;
+    pub fn coshf(x: f32) -> f32;
+    pub fn sinh(x: f64) -> f64;
+    pub fn sinhf(x: f32) -> f32;
+    pub fn tanh(x: f64) -> f64;
+    pub fn tanhf(x: f32) -> f32;
+    pub fn exp(x: f64) -> f64;
+    pub fn expf(x: f32) -> f32;
+    pub fn exp2(x: f64) -> f64;
+    pub fn exp2f(x: f32) -> f32;
+    pub fn expm1(x: f64) -> f64;
+    pub fn expm1f(x: f32) -> f32;
+    pub fn log(x: f64) -> f64;
+    pub fn logf(x: f32) -> f32;
+    pub fn log10(x: f64) -> f64;
+    pub fn log10f(x: f32) -> f32;
+    pub fn log1p(x: f64) -> f64;
+    pub fn log1pf(x: f32) -> f32;
+    pub fn log2(x: f64) -> f64;
+    pub fn log2f(x: f32) -> f32;
+    pub fn logb(x: f64) -> f64;
+    pub fn logbf(x: f32) -> f32;
+    pub fn cbrt(x: f64) -> f64;
+    pub fn cbrtf(x: f32) -> f32;
+    pub fn fabs(x: f64) -> f64;
+    pub fn fabsf(x: f32) -> f32;
+    pub fn sqrt(x: f64) -> f64;
+    pub fn sqrtf(x: f32) -> f32;
+    pub fn erf(x: f64) -> f64;
+    pub fn erff(x: f32) -> f32;
+    pub fn erfc(x: f64) -> f64;
+    pub fn erfcf(x: f32) -> f32;
+    pub fn tgamma(x: f64) -> f64;
+    pub fn tgammaf(x: f32) -> f32;
+    pub fn ceil(x: f64) -> f64;
+    pub fn ceilf(x: f32) -> f32;
+    pub fn floor(x: f64) -> f64;
+    pub fn floorf(x: f32) -> f32;
+    pub fn nearbyint(x: f64) -> f64;
+    pub fn nearbyintf(x: f32) -> f32;
+    pub fn rint(x: f64) -> f64;
+    pub fn rintf(x: f32) -> f32;
+    pub fn round(x: f64) -> f64;
+    pub fn roundf(x: f32) -> f32;
+    pub fn trunc(x: f64) -> f64;
+    pub fn truncf(x: f32) -> f32;
+    pub fn significand(x: f64) -> f64;
+    pub fn significandf(x: f32) -> f32;
+    pub fn atan2(y: f64, x: f64) -> f64;
+    pub fn atan2f(y: f32, x: f32) -> f32;
+    pub fn hypot(x: f64, y: f64) -> f64;
+    pub fn hypotf(x: f32, y: f32) -> f32;
+    pub fn pow(x: f64, y: f64) -> f64;
+    pub fn powf(x: f32, y: f32) -> f32;
+    pub fn fmod(x: f64, y: f64) -> f64;
+    pub fn fmodf(x: f32, y: f32) -> f32;
+    pub fn remainder(x: f64, y: f64) -> f64;
+    pub fn remainderf(x: f32, y: f32) -> f32;
+    pub fn copysign(x: f64, y: f64) -> f64;
+    pub fn copysignf(x: f32, y: f32) -> f32;
+    pub fn nextafter(x: f64, y: f64) -> f64;
+    pub fn nextafterf(x: f32, y: f32) -> f32;
+    pub fn fdim(x: f64, y: f64) -> f64;
+    pub fn fdimf(x: f32, y: f32) -> f32;
+    pub fn fmax(x: f64, y: f64) -> f64;
+    pub fn fmaxf(x: f32, y: f32) -> f32;
+    pub fn fmin(x: f64, y: f64) -> f64;
+    pub fn fminf(x: f32, y: f32) -> f32;
+    pub fn drem(x: f64, y: f64) -> f64;
+    pub fn dremf(x: f32, y: f32) -> f32;
+    pub fn scalb(x: f64, exp: f64) -> f64;
+    pub fn scalbf(x: f32, exp: f32) -> f32;
+    pub fn fma(x: f64, y: f64, z: f64) -> f64;
+    pub fn fmaf(x: f32, y: f32, z: f32) -> f32;
+    pub fn ilogb(x: f64) -> c_int;
+    pub fn ilogbf(x: f32) -> c_int;
+    pub fn finite(x: f64) -> c_int;
+    pub fn finitef(x: f32) -> c_int;
+    pub fn isinf(x: f64) -> c_int;
+    pub fn isinff(x: f32) -> c_int;
+    pub fn isnan(x: f64) -> c_int;
+    pub fn isnanf(x: f32) -> c_int;
+    pub fn ldexp(x: f64, exp: c_int) -> f64;
+    pub fn ldexpf(x: f32, exp: c_int) -> f32;
+    pub fn scalbn(x: f64, n: c_int) -> f64;
+    pub fn scalbnf(x: f32, n: c_int) -> f32;
+    pub fn scalbln(x: f64, n: c_long) -> f64;
+    pub fn scalblnf(x: f32, n: c_long) -> f32;
+    pub fn lrint(x: f64) -> c_long;
+    pub fn lrintf(x: f32) -> c_long;
+    pub fn lround(x: f64) -> c_long;
+    pub fn lroundf(x: f32) -> c_long;
+    pub fn llrint(x: f64) -> c_longlong;
+    pub fn llrintf(x: f32) -> c_longlong;
+    pub fn llround(x: f64) -> c_longlong;
+    pub fn llroundf(x: f32) -> c_longlong;
+    pub fn j0(x: f64) -> f64;
+    pub fn j0f(x: f32) -> f32;
+    pub fn j1(x: f64) -> f64;
+    pub fn j1f(x: f32) -> f32;
+    pub fn y0(x: f64) -> f64;
+    pub fn y0f(x: f32) -> f32;
+    pub fn y1(x: f64) -> f64;
+    pub fn y1f(x: f32) -> f32;
+    pub fn jn(n: c_int, x: f64) -> f64;
+    pub fn jnf(n: c_int, x: f32) -> f32;
+    pub fn yn(n: c_int, x: f64) -> f64;
+    pub fn ynf(n: c_int, x: f32) -> f32;
+    pub fn lgamma(x: f64) -> f64;
+    pub fn lgammaf(x: f32) -> f32;
+    pub fn gamma(x: f64) -> f64;
+    pub fn gammaf(x: f32) -> f32;
+    pub fn frexp(value: f64, exp: *mut c_int) -> f64;
+    pub fn modf(value: f64, iptr: *mut f64) -> f64;
+    pub fn remquo(x: f64, y: f64, quo: *mut c_int) -> f64;
+    pub fn sincos(x: f64, sin: *mut f64, cos: *mut f64) -> ();
+    pub fn lgamma_r(x: f64, signp: *mut c_int) -> f64;
+    pub fn frexpf(value: f32, exp: *mut c_int) -> f32;
+    pub fn modff(value: f32, iptr: *mut f32) -> f32;
+    pub fn remquof(x: f32, y: f32, quo: *mut c_int) -> f32;
+    pub fn sincosf(x: f32, sin: *mut f32, cos: *mut f32) -> ();
+    pub fn lgammaf_r(x: f32, signp: *mut c_int) -> f32;
+    pub fn nan(tagp: *const c_char) -> f64;
+    pub fn nanf(tagp: *const c_char) -> f32;
+
+    /// C's shared gamma sign. Access requires external synchronization.
+    pub static mut signgam: c_int;
+}

@@ -1,0 +1,13 @@
+[package]
+name = "xj_cmath"
+version = "0.1.0"
+edition = "2024"
+description = "Safe Rust wrappers for C math.h functions"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/brk/xj_cmath"
+
+[dependencies]
+
+[build-dependencies]
+cc = "1.2"
