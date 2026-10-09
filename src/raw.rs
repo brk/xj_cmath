@@ -5,6 +5,9 @@
 //! Callers of `lgamma`, `lgammaf`, `gamma`, `gammaf`, or users of `signgam`
 //! must synchronize access to the shared C global across all threads and libraries.
 //! Use the crate-root wrappers when possible.
+//!
+//! `sqrt`, `sqrtf`, `fmod`, and `fmodf` bind to the same domain-error-reporting
+//! C shims used by the safe wrappers, including when called through pointers.
 
 use core::ffi::{c_char, c_int, c_long, c_longlong};
 
@@ -53,7 +56,9 @@ unsafe extern "C" {
     pub fn cbrtf(x: f32) -> f32;
     pub fn fabs(x: f64) -> f64;
     pub fn fabsf(x: f32) -> f32;
+    #[link_name = "xj_cmath_sqrt"]
     pub fn sqrt(x: f64) -> f64;
+    #[link_name = "xj_cmath_sqrtf"]
     pub fn sqrtf(x: f32) -> f32;
     pub fn erf(x: f64) -> f64;
     pub fn erff(x: f32) -> f32;
@@ -83,7 +88,9 @@ unsafe extern "C" {
     pub fn hypotf(x: f32, y: f32) -> f32;
     pub fn pow(x: f64, y: f64) -> f64;
     pub fn powf(x: f32, y: f32) -> f32;
+    #[link_name = "xj_cmath_fmod"]
     pub fn fmod(x: f64, y: f64) -> f64;
+    #[link_name = "xj_cmath_fmodf"]
     pub fn fmodf(x: f32, y: f32) -> f32;
     pub fn remainder(x: f64, y: f64) -> f64;
     pub fn remainderf(x: f32, y: f32) -> f32;

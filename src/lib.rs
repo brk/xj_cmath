@@ -3,6 +3,13 @@
 //! Floating-point arguments use `f32`/`f64`; integer arguments and results use
 //! the corresponding `core::ffi` types. Domain/range errors, NaNs, infinities,
 //! rounding modes, `errno`, and floating-point exceptions retain C semantics.
+//! Classification wrappers use Rust's built-in float methods and return `0` or
+//! `1`. [`fpclassify`] and [`fpclassifyf`] return the native C `FP_*` values,
+//! exposed here as immutable statics.
+//! [`sqrt`], [`sqrtf`], [`fmod`], and [`fmodf`] use C shims that explicitly
+//! report domain errors through `errno` when the target advertises `MATH_ERRNO`.
+//! This preserves error reporting even when Rust's compiler builtins supply
+//! the numerical implementation of those functions.
 //!
 //! Output-pointer functions take mutable references. Their unsafe `_ptr`
 //! alternatives accept native pointers. The NaN constructors take `&mut CStr`
@@ -34,8 +41,10 @@
 
 use core::ffi::{CStr, c_char, c_int, c_long, c_longlong};
 
+mod classification;
 mod long_double;
 pub mod raw;
+pub use classification::*;
 pub use long_double::{LongDouble, ParseLongDoubleError, nexttoward, nexttowardf};
 pub use raw::signgam;
 
@@ -147,10 +156,6 @@ scalar_wrappers! {
     fn ilogbf(x: f32) -> c_int;
     fn finite(x: f64) -> c_int;
     fn finitef(x: f32) -> c_int;
-    fn isinf(x: f64) -> c_int;
-    fn isinff(x: f32) -> c_int;
-    fn isnan(x: f64) -> c_int;
-    fn isnanf(x: f32) -> c_int;
     fn ldexp(x: f64, exp: c_int) -> f64;
     fn ldexpf(x: f32, exp: c_int) -> f32;
     fn scalbn(x: f64, n: c_int) -> f64;

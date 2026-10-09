@@ -1,8 +1,15 @@
 fn main() {
+    println!("cargo:rerun-if-changed=src/classification.c");
+    println!("cargo:rerun-if-changed=src/math_errno.c");
     println!("cargo:rerun-if-changed=src/long_double.c");
     println!("cargo:rerun-if-changed=src/macos.c");
     let mut build = cc::Build::new();
-    build.file("src/long_double.c").std("c11").warnings(true);
+    build
+        .file("src/long_double.c")
+        .file("src/classification.c")
+        .file("src/math_errno.c")
+        .std("c11")
+        .warnings(true);
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("macos") {
         build.file("src/macos.c");
         // cc defaults to the SDK's minimum, which can exceed Rust's minimum.

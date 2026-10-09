@@ -11,3 +11,6 @@ repository = "https://github.com/brk/xj_cmath"
 
 [build-dependencies]
 cc = "1.2"
+
+[dev-dependencies]
+libc = "0.2"
