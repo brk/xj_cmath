@@ -1,6 +1,6 @@
 [package]
 name = "xj_cmath"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Safe Rust wrappers for C math.h functions"
 rust-version = "1.85"

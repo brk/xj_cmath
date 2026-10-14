@@ -305,7 +305,7 @@ pub fn gammaf(x: f32) -> f32 {
 
 /// Constructs a NaN from a NUL-terminated C payload tag.
 #[inline]
-pub fn nan(tagp: &mut CStr) -> f64 {
+pub fn nan(tagp: &CStr) -> f64 {
     // SAFETY: CStr guarantees readable, terminated input; C does not modify it.
     unsafe { nan_ptr(tagp.as_ptr()) }
 }
@@ -323,7 +323,7 @@ pub unsafe fn nan_ptr(tagp: *const c_char) -> f64 {
 
 /// Constructs a NaN from a NUL-terminated C payload tag.
 #[inline]
-pub fn nanf(tagp: &mut CStr) -> f32 {
+pub fn nanf(tagp: &CStr) -> f32 {
     // SAFETY: CStr guarantees readable, terminated input; C does not modify it.
     unsafe { nanf_ptr(tagp.as_ptr()) }
 }
